@@ -1,0 +1,70 @@
+#此工作流将在创建版本时将Python包上传到PyPI
+#有关更多信息,请参见:https://docs .github .com/en/actions/automating-build-and-tests/build-and-testing-python # publishing-to-package-registries
+
+#此工作流程使用了未经开源代码库认证的操作。
+#它们由第三方提供，并受
+#单独的服务条款、隐私政策和支持
+#文档。
+
+名字: 名称:上传Python包
+
+在:
+释放；排放；发布:
+类型: [类型:[已发布]]
+
+许可:
+内容: 内容:阅读
+
+工作:
+发布-构建:
+连续运行: 运行:Ubuntu-最新版
+
+步伐:
+      - 使用: -用途: 动作/签出@v4
+
+      - 使用: -用途:操作/设置-python@v5
+随着:
+python版本: " 3.x "
+
+      - 名字: 构建发布版本
+奔跑: |
+#注意:将您自己的发行版构建步骤放在这里。
+python -m pip安装构建
+python -m构建
+
+-名称:上传分发
+用途:操作/上传-工件@v4
+使用:
+名称:发布经销商
+路径:距离/
+
+pypi-发布:
+连续运行: Ubuntu-最新版
+需要:
+      - 发布-构建
+许可:
+      #重要提示:对于受信任的发布，此权限是必需的
+身份令牌: 写
+
+    #强烈建议使用具有发布保护的专用环境。
+    #如需详细资讯，请参阅:https://docs . github . com/en/actions/deployment/targeting-different-environments/using-environments-For-deployment # deployment-protection-rules
+环境:
+      name: pypi
+      #可选:取消注释并更新以将您的PyPI项目URL包含在部署状态中:
+      #网址:https://pypi.org/p/YOURPROJECT
+      #
+# ALTERNATIVE:如果您的GitHub发布名称是PyPI项目版本字符串# ALTERNATIVE: if your GitHub Release name is the PyPI project version string
+# ALTERNATIVE:确切地说，取消对以下行的注释:# ALTERNATIVE: exactly, uncomment the following line instead:
+# URL:https://pypi.org/project/YOURPROJECT/${github 。事件。释放。网址:https://pypi.org/project/YOURPROJECT/${github.event.release.name }}
+
+步伐:
+      - 名字: -名称:检索发布分发
+使用: 用途:操作/下载-工件@v4
+随着:
+名称:发布经销商
+小路: 路径:距离/
+
+      - 名字: -名称:向PyPI发布发布版本
+使用: 用途:pypa/GH-action-pypi-publish @ release/v1
+随着:
+包-目录: 包-目录:距离/
