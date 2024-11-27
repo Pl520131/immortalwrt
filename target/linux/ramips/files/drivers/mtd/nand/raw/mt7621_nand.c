@@ -1248,7 +1248,6 @@ static int mt7621_nfc_init_chip(struct mt7621_nfc *nfc)
 	nand->ecc.write_oob_raw = mt7621_nfc_write_oob_raw;
 
 	mtd = nand_to_mtd(nand);
-	mtd->owner = THIS_MODULE;
 	mtd->dev.parent = nfc->dev;
 	mtd->name = MT7621_NFC_NAME;
 	mtd_set_ooblayout(mtd, &mt7621_nfc_ooblayout_ops);
@@ -1293,8 +1292,7 @@ static int mt7621_nfc_probe(struct platform_device *pdev)
 	if (IS_ERR(nfc->nfi_regs))
 		return PTR_ERR(nfc->nfi_regs);
 
-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ecc");
-	nfc->ecc_regs = devm_ioremap_resource(dev, res);
+	nfc->ecc_regs = devm_platform_ioremap_resource_byname(pdev, "ecc");
 	if (IS_ERR(nfc->ecc_regs))
 		return PTR_ERR(nfc->ecc_regs);
 
@@ -1338,7 +1336,6 @@ static struct platform_driver mt7621_nfc_driver = {
 	.remove = mt7621_nfc_remove,
 	.driver = {
 		.name = MT7621_NFC_NAME,
-		.owner = THIS_MODULE,
 		.of_match_table = mt7621_nfc_id_table,
 	},
 };
